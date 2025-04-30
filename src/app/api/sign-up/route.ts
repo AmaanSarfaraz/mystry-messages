@@ -23,7 +23,7 @@ export async function POST(request: Request) {
       );
     }
     const existingUserByEmail = await UserModel.findOne({ email });
-    const verifyCode = Math.floor(100000 + Math.random() + 900000).toString();
+    const verifyCode = Math.floor(100000 + Math.random() * 900000).toString();
     if (existingUserByEmail) {
       if (existingUserByEmail.isVerified) {
         return Response.json(
@@ -37,7 +37,9 @@ export async function POST(request: Request) {
         const hashedPassword = await bcrypt.hash(password, 10);
         existingUserByEmail.password = hashedPassword;
         existingUserByEmail.verifyCode = verifyCode;
-        existingUserByEmail.verifyCodeExpiry = new Date(Date.now() + 600000);
+        existingUserByEmail.verifyCodeExpiry = new Date(
+          Date.now() + 10 * 60 * 1000
+        );
         await existingUserByEmail.save();
       }
     } else {
