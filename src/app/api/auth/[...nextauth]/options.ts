@@ -1,8 +1,8 @@
 import { NextAuthOptions } from "next-auth";
 import CredentialsProvider from "next-auth/providers/credentials";
-import dbConnect from "@/lib/dbConnect";
 import bcrypt from "bcryptjs";
-import UserModel from "@/models/user";
+import dbConnect from "@/lib/dbConnect";
+import UserModel from "@/models/User";
 
 export const authOptions: NextAuthOptions = {
   providers: [
@@ -26,7 +26,7 @@ export const authOptions: NextAuthOptions = {
             throw new Error("no user found with this email");
           }
           if (!user.isVerified) {
-            throw new Error("please your account before login");
+            throw new Error("please verify your account before login");
           }
           const isPasswordCorrect = await bcrypt.compare(
             credentials.password,
@@ -63,11 +63,11 @@ export const authOptions: NextAuthOptions = {
       return session;
     },
   },
-  pages: {
-    signIn: "/sign-in",
-  },
   session: {
     strategy: "jwt",
   },
   secret: process.env.NEXTAUTH_SECRET,
+  pages: {
+    signIn: "/sign-in",
+  },
 };

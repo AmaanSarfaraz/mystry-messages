@@ -3,7 +3,7 @@ import { MessageCard } from "@/components/MessageCard";
 import { Button } from "@/components/ui/button";
 import { Separator } from "@/components/ui/separator";
 import { Switch } from "@/components/ui/switch";
-import { Message } from "@/models/user";
+import { Message } from "@/models/User";
 import { acceptMessageSchema } from "@/schemas/acceptMessageSchema";
 import { ApiResponse } from "@/types/ApiResponse";
 import { zodResolver } from "@hookform/resolvers/zod";
@@ -15,7 +15,7 @@ import { Key, useCallback, useEffect, useState } from "react";
 import { useForm } from "react-hook-form";
 import { toast } from "sonner";
 
-const page = () => {
+const UserDashboard = () => {
   const [messages, setMessages] = useState<Message[]>([]);
   const [isLoading, setIsLoading] = useState(false);
   const [isSwitchLoading, setIsSwitchLoading] = useState(false);
@@ -88,7 +88,11 @@ const page = () => {
     }
   };
 
-  const { username } = session?.user as User;
+  if (!session || !session.user) {
+    return <div>please login</div>;
+  }
+
+  const { username } = session.user as User;
   const baseUrl = `${window.location.protocol}//${window.location.host}`;
   const profileUrl = `${baseUrl}/u/${username}`;
 
@@ -97,9 +101,6 @@ const page = () => {
     toast("copied");
   };
 
-  if (!session || !session.user) {
-    return <div>please login</div>;
-  }
   return (
     <div className="my-8 mx-4 md:mx-8 lg:mx-auto p-6 bg-white rounded w-full max-w-6xl">
       <h1 className="text-4xl font-bold mb-4">User Dashboard</h1>
@@ -161,4 +162,4 @@ const page = () => {
   );
 };
 
-export default page;
+export default UserDashboard;
