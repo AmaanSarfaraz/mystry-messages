@@ -4,17 +4,21 @@ export { default } from "next-auth/middleware";
 
 export async function middleware(request: NextRequest) {
   const token = await getToken({ req: request });
-  const url = request.nextUrl;
-  if (
-    token &&
-    (url.pathname.startsWith("/sign-in") ||
-      url.pathname.startsWith("/sign-up") ||
-      url.pathname.startsWith("/verify") ||
-      url.pathname.startsWith("/"))
-  ) {
+  const { pathname } = request.nextUrl;
+
+  // If logged in and on an auth page, redirect to dashboard
+  const isAuthPage =
+    pathname.startsWith("/sign-in") ||
+    pathname.startsWith("/sign-up") ||
+    pathname.startsWith("/verify") ||
+    pathname === "/";
+
+  if (token && isAuthPage) {
     return NextResponse.redirect(new URL("/dashboard", request.url));
   }
-  // return NextResponse.redirect(new URL("/home", request.url));
+
+  // If NOT logged in, let NextAuth middleware handle protected routes
+  return NextResponse.next();
 }
 
 export const config = {
