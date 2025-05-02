@@ -30,7 +30,7 @@ const SignUp = () => {
   const router = useRouter();
 
   //zod implementation
-  const register = useForm({
+  const register = useForm<z.infer<typeof signUpSchema>>({
     resolver: zodResolver(signUpSchema),
     defaultValues: {
       username: "",
@@ -127,7 +127,7 @@ const SignUp = () => {
                 <FormItem>
                   <FormLabel>Email</FormLabel>
                   <Input {...field} name="email" />
-                  <p className="text-muted text-gray-400 text-sm">
+                  <p className="text-mute text-sm">
                     We will send you a verification code
                   </p>
                   <FormMessage />
